@@ -203,6 +203,7 @@ Error generating stack: `+c.message+`
         while (walker.nextNode()) textNodes.push(walker.currentNode);
         textNodes.forEach((node) => {
           if (node.nodeValue.trim() === "S") node.nodeValue = "⚙";
+          node.nodeValue = node.nodeValue.replace("Vijayawada's #1 Rated Service Team", "PROFESSIONAL DOORSTEP APPLIANCE REPAIR IN VIJAYAWADA");
           node.nodeValue = node.nodeValue.replace(/Speed Service Centre|Speed Service/gi, "SPINCARE").replace(/SPINCARE CENTRE/gi, "SPINCARE").replace(/\bCENTRE\b/gi, "");
           const originalText = node.nodeValue;
           node.nodeValue = node.nodeValue.replace(/\b(LG|Samsung|Whirlpool|IFB|Haier|Godrej|Bosch|Panasonic)\b/gi, "");
@@ -213,8 +214,27 @@ Error generating stack: `+c.message+`
           }
         });
       };
-      new MutationObserver(removeOldBranding).observe(document.getElementById("root"), { childList: true, subtree: true });
+      const addRequestedFooterContent = () => {
+        const copyright = [...document.querySelectorAll("p")].find((node) => node.textContent.includes("2026"));
+        if (!copyright || copyright.parentElement.querySelector("[data-spincare-disclaimer]")) return;
+        const address = document.createElement("p");
+        address.className = "text-[10px] text-slate-500 leading-relaxed font-black tracking-normal";
+        address.textContent = "Office Address: Door No. 5-73, Ramalayam Veedhi, Chodavaram, Vijayawada, Andhra Pradesh - 521139.";
+        const disclaimerBox = document.createElement("div");
+        disclaimerBox.dataset.spincareDisclaimer = "true";
+        disclaimerBox.className = "mt-4 rounded-lg border border-slate-700 bg-slate-900/60 p-4 text-left";
+        const disclaimer = document.createElement("p");
+        disclaimer.className = "text-[10px] text-slate-400 leading-relaxed tracking-normal";
+        disclaimer.textContent = "Disclaimer: SpinCare is an independent, third-party home appliance repair service provider in Vijayawada. We are not affiliated with, authorized by, or associated with any original equipment manufacturers or brands. All brand names and models are used strictly for reference purposes to describe service compatibility.";
+        disclaimerBox.appendChild(disclaimer);
+        copyright.parentElement.append(address, disclaimerBox);
+      };
+      new MutationObserver(() => {
+        removeOldBranding();
+        addRequestedFooterContent();
+      }).observe(document.getElementById("root"), { childList: true, subtree: true });
       removeOldBranding();
+      addRequestedFooterContent();
     </script>
   </body>
 </html>
