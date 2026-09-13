@@ -202,8 +202,19 @@ Error generating stack: `+c.message+`
         const textNodes = [];
         while (walker.nextNode()) textNodes.push(walker.currentNode);
         textNodes.forEach((node) => {
+          if (node.nodeValue.trim() === "ITI Certified") {
+            const card = node.parentElement?.parentElement?.parentElement;
+            if (card) card.remove();
+            return;
+          }
+          if (node.nodeValue.trim() === "10+ Years") {
+            const metric = node.parentElement?.parentElement;
+            if (metric) metric.remove();
+            return;
+          }
           if (node.nodeValue.trim() === "S") node.nodeValue = "⚙";
           node.nodeValue = node.nodeValue.replace("Vijayawada's #1 Rated Service Team", "PROFESSIONAL DOORSTEP APPLIANCE REPAIR IN VIJAYAWADA");
+          node.nodeValue = node.nodeValue.replace("Vijayawada's #1 rated home appliance repair partner", "Vijayawada's trusted doorstep home appliance repair partner");
           node.nodeValue = node.nodeValue.replace(/Speed Service Centre|Speed Service/gi, "SPINCARE").replace(/SPINCARE CENTRE/gi, "SPINCARE").replace(/\bCENTRE\b/gi, "");
           const originalText = node.nodeValue;
           node.nodeValue = node.nodeValue.replace(/\b(LG|Samsung|Whirlpool|IFB|Haier|Godrej|Bosch|Panasonic)\b/gi, "");
